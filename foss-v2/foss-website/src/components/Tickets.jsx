@@ -12,13 +12,14 @@ const passes = [
     price: "₹1,499",
     duration: "Single Day",
     color: "#888888",
+    badge: "STARTER",
+    districtUrl: "https://www.district.in/events/day-pass",
     features: [
       "Full access to one day",
       "All performance zones",
       "Food & beverage zones",
       "Standard viewing",
     ],
-    badge: "STARTER",
   },
   {
     id: "weekend",
@@ -27,6 +28,9 @@ const passes = [
     price: "₹2,499",
     duration: "Both Days",
     color: "#e10600",
+    badge: "POPULAR",
+    featured: true,
+    districtUrl: "https://www.district.in/events/weekend-pass",
     features: [
       "Full 2-day access",
       "All performance zones",
@@ -34,8 +38,6 @@ const passes = [
       "Exclusive merch drop",
       "Meet & greet lottery",
     ],
-    badge: "POPULAR",
-    featured: true,
   },
   {
     id: "vip",
@@ -44,6 +46,8 @@ const passes = [
     price: "₹6,999",
     duration: "Premium 2-Day",
     color: "#d4af37",
+    badge: "LIMITED",
+    districtUrl: "https://www.district.in/events/vip-grid-pass",
     features: [
       "Pit lane access",
       "VIP lounge & bar",
@@ -52,7 +56,6 @@ const passes = [
       "Complimentary parking",
       "Signed merchandise",
     ],
-    badge: "LIMITED",
   },
 ];
 
@@ -75,7 +78,8 @@ export default function Tickets() {
   };
 
   useEffect(() => {
-    const target = new Date("2026-12-05T09:00:00").getTime();
+    // Countdown set to Event Start Date: Nov 28, 2026 at 09:00 AM IST
+    const target = new Date("2026-11-28T09:00:00").getTime();
     const tick = () => {
       const now = new Date().getTime();
       const diff = target - now;
@@ -242,7 +246,6 @@ export default function Tickets() {
           className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 mb-8 sm:mb-16 items-end"
         >
           <div className="lg:col-span-7">
-           
             <h2 className="font-display text-3xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.95] uppercase font-light tracking-tight">
               Be there<span className="text-red-600">.</span>
               <br />
@@ -254,9 +257,13 @@ export default function Tickets() {
 
           {/* COUNTDOWN */}
           <div className="lg:col-span-5 w-full">
-            <div className="label text-white/50 mb-2 text-[10px] sm:text-xs tracking-widest uppercase font-normal">
-              Countdown to launch
+            <div className="flex items-center gap-2 mb-2">
+              <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
+              <div className="label text-white/70 text-[10px] sm:text-xs tracking-widest uppercase font-semibold">
+                EVENT STARTS NOVEMBER 28, 2026
+              </div>
             </div>
+
             <div className="grid grid-cols-4 gap-1.5 sm:gap-3">
               {[
                 ["DAYS", countdown.d],
@@ -277,13 +284,14 @@ export default function Tickets() {
                 </div>
               ))}
             </div>
-            <p className="text-white/40 text-[10px] sm:text-xs mt-2 sm:mt-3 font-normal">
-              Early bird ends in 30 days. Prices increase after.
+
+            <p className="text-white/50 text-[10px] sm:text-xs mt-2 sm:mt-3 font-normal">
+              ⚡ Festival gates open 09:00 AM on Nov 28 in Bengaluru. Book on District to reserve your slot.
             </p>
           </div>
         </div>
 
-        {/* PASS CARDS - ALWAYS 3 IN A ROW (GRID-COLS-3 ON MOBILE) */}
+        {/* PASS CARDS */}
         <div
           className="grid grid-cols-3 gap-2 sm:gap-5 lg:gap-8 items-stretch"
           style={{ perspective: "1200px" }}
@@ -380,21 +388,24 @@ export default function Tickets() {
                     </div>
                   </div>
 
-                  {/* Select Button */}
+                  {/* District Direct Buy Link */}
                   <div className="p-2 sm:p-5 lg:p-7 mt-auto">
-                    <button
-                      type="button"
-                      className={`w-full py-2 sm:py-3 font-display text-[9px] sm:text-xs uppercase tracking-widest transition-all duration-300 font-normal ${
+                    <a
+                      href={pass.districtUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className={`block w-full py-2 sm:py-3 text-center font-display text-[9px] sm:text-xs uppercase tracking-widest transition-all duration-300 font-normal ${
                         isSelected
-                          ? "bg-red-600 text-white"
+                          ? "bg-red-600 text-white hover:bg-red-700"
                           : "border border-white/20 hover:border-white text-white/70 hover:text-white bg-transparent"
                       }`}
                     >
-                      {isSelected ? "Selected" : "Select"}
-                    </button>
+                      Buy on District →
+                    </a>
                   </div>
 
-                  {/* Minimal Accents */}
+                  {/* Accents */}
                   <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-red-600/60 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
                   <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-red-600/60 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
                 </div>
@@ -417,20 +428,21 @@ export default function Tickets() {
             </div>
 
             <div className="hidden sm:block md:col-span-4 label text-xs text-white/50 space-y-1 font-normal">
-              <div>Instant digital delivery</div>
-              <div>Full refund up to 30 days</div>
+              <div>🎟️ Official ticketing partner: District</div>
+              <div>⚡ Event dates: 28–29 Nov 2026</div>
             </div>
 
             <div className="md:col-span-3">
               <a
-                href="#checkout"
-                onClick={(e) => e.preventDefault()}
-                className="block relative overflow-hidden bg-red-600 hover:text-red-800 text-white py-3 sm:py-4 text-center group"
+                href={activePass.districtUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block relative overflow-hidden bg-red-600 text-white py-3 sm:py-4 text-center group"
               >
-                <span className="relative z-10   font-display text-xs sm:text-sm uppercase tracking-widest font-normal">
-                  Checkout →
+                <span className="relative z-10 font-display text-xs sm:text-sm uppercase tracking-widest font-normal group-hover:text-black transition-colors duration-300">
+                  Book on District →
                 </span>
-                <div className="absolute inset-0  bg-white transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out" />
+                <div className="absolute inset-0 bg-white transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out" />
               </a>
             </div>
           </div>

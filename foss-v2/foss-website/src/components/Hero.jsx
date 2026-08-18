@@ -12,16 +12,14 @@ export default function Hero() {
   const [videoLoaded, setVideoLoaded] = useState(false);
 
   useEffect(() => {
-    // Detect reduced motion
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
 
-    // Detect mobile (skip heavy parallax on small screens)
     const isMobile = window.innerWidth < 768;
 
     const ctx = gsap.context(() => {
-      // ============ PIN SECTION ============
+      // Pin Section
       ScrollTrigger.create({
         trigger: sectionRef.current,
         start: "top top",
@@ -32,14 +30,14 @@ export default function Hero() {
         anticipatePin: 1,
       });
 
-      // ============ VIDEO PARALLAX (skip on reduced motion) ============
+      // Video Parallax
       if (!prefersReducedMotion && videoWrapRef.current) {
         gsap.fromTo(
           videoWrapRef.current,
           { scale: 1, yPercent: 0 },
           {
-            scale: isMobile ? 1.15 : 1.25,
-            yPercent: isMobile ? 8 : 12,
+            scale: isMobile ? 1.12 : 1.2,
+            yPercent: isMobile ? 6 : 10,
             ease: "none",
             scrollTrigger: {
               trigger: sectionRef.current,
@@ -51,35 +49,35 @@ export default function Hero() {
         );
       }
 
-      // ============ TEXT FADE OUT ============
+      // Text Fade Out
       if (textRef.current) {
         gsap.to(textRef.current, {
-          y: isMobile ? -40 : -80,
+          y: isMobile ? -30 : -60,
           opacity: 0,
           ease: "none",
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top top",
-            end: "80% top",
+            end: "75% top",
             scrub: 1,
           },
         });
       }
 
-      // ============ ENTRANCE ANIMATION ============
+      // Entrance Animation
       gsap.from(".hero-line", {
         yPercent: 100,
         opacity: 0,
-        duration: 0.9,
-        stagger: 0.12,
+        duration: 1.1,
+        stagger: 0.15,
         ease: "power4.out",
         delay: 0.2,
       });
 
       gsap.from(".hero-meta", {
         opacity: 0,
-        y: -20,
-        duration: 0.8,
+        y: -15,
+        duration: 0.9,
         stagger: 0.1,
         ease: "power3.out",
         delay: 0.1,
@@ -87,11 +85,11 @@ export default function Hero() {
 
       gsap.from(".hero-bottom", {
         opacity: 0,
-        y: 20,
-        duration: 0.8,
+        y: 15,
+        duration: 0.9,
         stagger: 0.1,
         ease: "power3.out",
-        delay: 0.8,
+        delay: 0.7,
       });
     }, sectionRef);
 
@@ -101,26 +99,23 @@ export default function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="relative h-[100svh] min-h-[600px] overflow-hidden grain bg-black"
+      className="relative h-[100svh] min-h-[650px] overflow-hidden grain bg-black text-white"
       style={{
         paddingTop: "env(safe-area-inset-top)",
       }}
     >
-      {/* ============ VIDEO BACKGROUND ============ */}
+      {/* Background Video */}
       <div
         ref={videoWrapRef}
         className="absolute inset-0 will-change-transform"
       >
-        {/* Fallback image (shown while video loads or on error) */}
         <img
           src="/placeholder.png"
           alt=""
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-            videoLoaded ? "opacity-0" : "opacity-100"
-          }`}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${videoLoaded ? "opacity-0" : "opacity-100"
+            }`}
         />
 
-        {/* Video */}
         <video
           ref={videoRef}
           autoPlay
@@ -131,145 +126,107 @@ export default function Hero() {
           poster="/placeholder.png"
           onLoadedData={() => setVideoLoaded(true)}
           onCanPlay={() => setVideoLoaded(true)}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-            videoLoaded ? "opacity-100" : "opacity-0"
-          }`}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${videoLoaded ? "opacity-100" : "opacity-0"
+            }`}
         >
           <source src="/hero.mp4" type="video/mp4" />
-          {/* Fallback source if hero.mp4 fails */}
-          <source
-            src="/placeholder.png"
-            type="video/mp4"
-          />
+          <source src="/placeholder.png" type="video/mp4" />
         </video>
       </div>
 
-      {/* ============ GRADIENT OVERLAYS ============ */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-black/90 pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/30 pointer-events-none" />
+      {/* Cinematic Overlays */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/30 to-black/95 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/40 pointer-events-none" />
 
-      {/* Subtle red glow */}
+      {/* Ambient Red Glow */}
       <div
-        className="absolute inset-0 pointer-events-none opacity-20 mix-blend-overlay"
+        className="absolute inset-0 pointer-events-none opacity-15 mix-blend-overlay"
         style={{
           background:
-            "radial-gradient(circle at 20% 80%, rgba(225,6,0,0.4) 0%, transparent 50%)",
+            "radial-gradient(circle at 15% 85%, rgba(225,6,0,0.5) 0%, transparent 60%)",
         }}
       />
 
-      {/* ============ CONTENT ============ */}
+      {/* Hero Content */}
       <div
         ref={textRef}
         className="relative z-10 h-full flex flex-col justify-between"
         style={{
-          paddingLeft: "clamp(16px, 4vw, 40px)",
-          paddingRight: "clamp(16px, 4vw, 40px)",
+          paddingLeft: "clamp(20px, 5vw, 64px)",
+          paddingRight: "clamp(20px, 5vw, 64px)",
           paddingTop: "clamp(80px, 12vh, 120px)",
-          paddingBottom: "clamp(20px, 4vh, 40px)",
+          paddingBottom: "clamp(28px, 5vh, 48px)",
         }}
       >
-        {/* ============ TOP META ============ */}
+        {/* Top Header Row */}
         <div className="flex justify-between items-start gap-4">
           <div className="hero-meta">
-           
-            <div
-              className="label text-white/85"
-              style={{ fontSize: "clamp(9px, 1.3vw, 11px)" }}
-            >
-              Feel It
-            </div>
+            <span className="text-[9px] sm:text-[11px] tracking-[0.3em] uppercase text-white/40 font-mono block">
+              Presented By
+            </span>
+            <span className="text-xs sm:text-sm tracking-[0.2em] uppercase text-white font-normal mt-0.5 block">
+              Motorsport Inc.
+            </span>
           </div>
 
           <div className="hero-meta text-right">
-            <div
-              className="label text-white/30 mb-1"
-              style={{ fontSize: "clamp(9px, 1.3vw, 11px)" }}
-            >
-              Dec 2026
-            </div>
-            <div
-              className="label text-white/85"
-              style={{ fontSize: "clamp(9px, 1.3vw, 11px)" }}
-            >
-              Bengaluru
-            </div>
+            <span className="text-[9px] sm:text-[11px] tracking-[0.3em] uppercase text-white/40 font-mono block">
+              Location
+            </span>
+            <span className="text-xs sm:text-sm tracking-[0.2em] uppercase text-white font-normal mt-0.5 block">
+              Bengaluru, KA
+            </span>
           </div>
         </div>
 
-        {/* ============ MAIN TITLE ============ */}
-        <div className="max-w-6xl">
-          <div
-            className="label text-accent mb-3 sm:mb-4 flex items-center gap-2 sm:gap-3"
-            style={{ fontSize: "clamp(9px, 1.3vw, 11px)" }}
-          >
-            <span className="w-6 sm:w-8 h-px bg-accent" />
-            Festival of Sound & Speed
-          </div>
-
+        {/* Main Title Styled to Match Image */}
+        <div className="max-w-7xl my-auto py-6">
           <h1
-            className="font-display uppercase leading-[0.85]"
+            className="font-black uppercase leading-[0.88] tracking-tighter"
             style={{
-              fontSize: "clamp(100px, 8vw, 150px)",
-              letterSpacing: "-0.03em",
+              fontSize: "clamp(36px, 6.5vw, 92px)",
             }}
           >
-            <div className="overflow-hidden">
-              <div className="hero-line">
-                Precision<span className="text-accent">.</span>
-              </div>
-            </div>
-            <div className="overflow-hidden">
-              <div className="hero-line">
-                Power<span className="text-accent">.</span>
-              </div>
-            </div>
-            <div className="overflow-hidden">
-              <div className="hero-line">
-                Pulse<span className="text-accent">.</span>
-              </div>
-            </div>
+            <span className="block overflow-hidden">
+              <span className="hero-line block text-white">
+                FESTIVAL OF
+              </span>
+            </span>
+            <span className="block overflow-hidden">
+              <span className="hero-line inline-flex items-center gap-[0.25em]">
+                <span className="text-white">LIGHT &</span>
+                <span className="text-red-600 italic font-black">SPEED</span>
+              </span>
+            </span>
           </h1>
         </div>
 
-        {/* ============ BOTTOM ROW ============ */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 sm:gap-6">
-          <p
-            className="hero-bottom text-white/60 leading-relaxed max-w-sm"
-            style={{ fontSize: "clamp(11px, 1.4vw, 13px)" }}
-          >
-            Two days. Motorsport meets music.
-            <br className="hidden sm:inline" />
-            5—6 December 2026, Bengaluru.
-            <br className="hidden sm:inline" />
-            <span className="text-white/40">
-              Presented by Motorsport Inc.
-            </span>
-          </p>
+        {/* Bottom Minimal Row */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 border-t border-white/10 pt-6">
+          <div className="hero-bottom flex flex-wrap items-center gap-x-4 sm:gap-x-6 gap-y-1 text-xs sm:text-sm tracking-[0.2em] uppercase font-light text-white/90">
+            <span>28 — 29 November 2026</span>
+            <span className="text-white/20">•</span>
+            <span className="text-white/60">Bengaluru</span>
+          </div>
 
-          {/* Scroll indicator */}
+          {/* Scroll Indicator */}
           <div className="hero-bottom flex items-center gap-3 label group cursor-pointer">
-            <span
-              className="text-white/60"
-              style={{ fontSize: "clamp(9px, 1.3vw, 11px)" }}
-            >
-              Scroll
+            <span className="text-white/50 text-[10px] sm:text-xs tracking-[0.25em] uppercase font-mono">
+              Explore
             </span>
-            <span className="w-8 sm:w-10 h-px bg-white/30 group-hover:bg-accent group-hover:w-14 transition-all duration-500" />
-            <span
-              className="text-white/40 group-hover:text-accent transition-colors"
-              style={{ fontSize: "clamp(12px, 1.5vw, 14px)" }}
-            >
+            <span className="w-8 sm:w-12 h-[1px] bg-white/20 group-hover:bg-red-600 group-hover:w-16 transition-all duration-500" />
+            <span className="text-white/40 group-hover:text-red-600 transition-colors text-xs sm:text-sm">
               ↓
             </span>
           </div>
         </div>
       </div>
 
-      {/* ============ CORNER FRAMES ============ */}
-      <div className="absolute top-0 left-0 w-6 h-6 sm:w-8 sm:h-8 border-t border-l border-white/15 pointer-events-none" />
-      <div className="absolute top-0 right-0 w-6 h-6 sm:w-8 sm:h-8 border-t border-r border-white/15 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-6 h-6 sm:w-8 sm:h-8 border-b border-l border-white/15 pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-6 h-6 sm:w-8 sm:h-8 border-b border-r border-white/15 pointer-events-none" />
+      {/* Structural Corner Framing */}
+      <div className="absolute top-0 left-0 w-6 h-6 sm:w-10 sm:h-10 border-t border-l border-white/15 pointer-events-none" />
+      <div className="absolute top-0 right-0 w-6 h-6 sm:w-10 sm:h-10 border-t border-r border-white/15 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-6 h-6 sm:w-10 sm:h-10 border-b border-l border-white/15 pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-6 h-6 sm:w-10 sm:h-10 border-b border-r border-white/15 pointer-events-none" />
     </section>
   );
 }

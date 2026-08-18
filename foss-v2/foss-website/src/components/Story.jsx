@@ -78,28 +78,6 @@ export default function Story() {
           start: "top 85%",
         },
       });
-
-      // STATS COUNTER
-      gsap.utils.toArray(".story-stat-num").forEach((el) => {
-        const target = parseInt(el.dataset.value, 10);
-        if (!isNaN(target)) {
-          const obj = { val: 0 };
-          gsap.to(obj, {
-            val: target,
-            duration: 1.8,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: el,
-              start: "top 85%",
-              once: true,
-            },
-            onUpdate: () => {
-              const suffix = el.dataset.suffix || "";
-              el.textContent = Math.round(obj.val) + suffix;
-            },
-          });
-        }
-      });
     }, sectionRef);
 
     return () => ctx.revert();
@@ -107,9 +85,9 @@ export default function Story() {
 
   return (
     <section
-      id="story"                                           /* ✅ THE FIX — nav queries #story */
+      id="story"
       ref={sectionRef}
-      className="relative border-t border-white/8 bg-black overflow-hidden scroll-mt-20"  /* ✅ scroll-mt keeps title below fixed nav */
+      className="relative border-t border-white/8 bg-black overflow-hidden scroll-mt-20"
       style={{
         paddingTop: "clamp(60px, 12vw, 160px)",
         paddingBottom: "clamp(60px, 12vw, 160px)",
@@ -130,11 +108,34 @@ export default function Story() {
       />
 
       <div className="relative max-w-[1400px] mx-auto">
-        {/* CHAPTER LABEL */}
-        <div ref={chapterRef} className="flex items-center gap-3 mb-8 md:mb-12">
-          <div className="h-px bg-accent" style={{ width: "clamp(24px, 4vw, 48px)" }} />
-          <div className="label text-accent" style={{ fontSize: "clamp(9px, 1.3vw, 11px)" }}>
-            The Story
+        {/* CHAPTER LABEL & HUD HEADER BAR */}
+        <div
+          ref={chapterRef}
+          className="flex flex-wrap items-center justify-between gap-4 mb-8 md:mb-12 pb-6 border-b border-white/10"
+        >
+          <div className="flex items-center gap-3">
+            <div className="h-px bg-accent" style={{ width: "clamp(24px, 4vw, 48px)" }} />
+            <div className="label text-accent" style={{ fontSize: "clamp(9px, 1.3vw, 11px)" }}>
+              The Story
+            </div>
+          </div>
+
+          {/* Telemetry Date & Location Badge */}
+          <div className="flex items-center gap-3 sm:gap-6 text-xs font-mono bg-white/[0.03] border border-white/10 px-4 py-2 rounded-full backdrop-blur-md">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+              <span className="text-white font-bold tracking-wider">28–29 NOV</span>
+            </div>
+
+            <span className="text-white/20">|</span>
+
+            <div className="flex items-center gap-2 group cursor-default">
+              <span className="text-white/50 group-hover:text-accent transition-colors">📍</span>
+              <span className="text-white/80 font-medium tracking-wide">BENGALURU</span>
+              <span className="hidden sm:inline text-[10px] text-white/40 font-mono">
+                [12.9716° N, 77.5946° E]
+              </span>
+            </div>
           </div>
         </div>
 
@@ -158,103 +159,78 @@ export default function Story() {
               <img
                 ref={imageRef}
                 src="/placeholder.png"
-                alt="Drift"
+                alt="Festival of Sound and Speed"
                 onLoad={() => setImgLoaded(true)}
-                className={`w-full h-full object-cover img-cin will-change-transform transition-opacity duration-700 ${
-                  imgLoaded ? "opacity-100" : "opacity-0"
-                }`}
+                className={`w-full h-full object-cover img-cin will-change-transform transition-opacity duration-700 ${imgLoaded ? "opacity-100" : "opacity-0"
+                  }`}
                 draggable={false}
               />
 
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
 
+              {/* Corner Accents */}
               <div className="absolute top-0 left-0 w-4 h-4 sm:w-6 sm:h-6 border-t-2 border-l-2 border-accent/50 pointer-events-none" />
               <div className="absolute bottom-0 right-0 w-4 h-4 sm:w-6 sm:h-6 border-b-2 border-r-2 border-accent/50 pointer-events-none" />
+
+              {/* Sound & Speed Telemetry Pulse Waveform */}
+              <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between pointer-events-none bg-black/40 backdrop-blur-sm p-3 rounded border border-white/10">
+                <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-widest font-bold">
+                  <span className="text-white">Sound</span>
+                  <span className="text-accent">&</span>
+                  <span className="text-accent">Speed</span>
+                </div>
+
+                <svg className="h-5 w-24 sm:w-32" viewBox="0 0 120 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M0 12H30L35 4L42 20L48 8L54 16L60 12H120"
+                    stroke="currentColor"
+                    className="text-accent"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
 
           {/* TEXT */}
-          <div ref={textRef} className="col-span-12 md:col-span-5 order-1 md:order-2">
+          <div ref={textRef} className="col-span-12 md:col-span-5 order-1 md:order-2 flex flex-col justify-center">
             <h2
-              className="story-cascade font-display uppercase leading-[0.9] mb-5 sm:mb-6"
-              style={{ fontSize: "clamp(36px, 7vw, 90px)", letterSpacing: "-0.02em" }}
+              className="story-cascade font-display uppercase leading-[0.9] mb-6"
+              style={{ fontSize: "clamp(32px, 6.5vw, 80px)", letterSpacing: "-0.01em" }}
             >
-              Born on
+              Where
               <br />
-              the <span className="text-accent italic">edge</span>
+              <span className="text-white">Speed</span> Meets <span className="text-accent italic font-black">Sound</span>
             </h2>
 
             <p
-              className="story-cascade text-white/70 leading-relaxed mb-4"
-              style={{ fontSize: "clamp(13px, 1.6vw, 16px)", maxWidth: "42ch" }}
+              className="story-cascade text-white/80 leading-relaxed mb-4 text-base sm:text-lg font-medium"
+              style={{ maxWidth: "42ch" }}
             >
-              Rooted in the underground drift scene and amplified by India's
-              rising music culture.
+              India’s high-energy experiential event that combines the thrill of
+              motorsport with the electrifying atmosphere of live music.
             </p>
 
             <p
-              className="story-cascade text-white/45 leading-relaxed"
-              style={{ fontSize: "clamp(11px, 1.4vw, 13px)", maxWidth: "42ch" }}
+              className="story-cascade text-white/50 leading-relaxed mb-8 text-sm sm:text-base"
+              style={{ maxWidth: "42ch" }}
             >
-              From the smoke of burning rubber to the light of a thousand
-              flashes — every second is engineered to make you feel alive.
+              A first-of-its-kind 2-day festival built for adrenaline seekers, auto enthusiasts, youth audiences, and entertainment lovers.
             </p>
 
-            {/* Stats */}
-            <div
-              className="story-cascade grid grid-cols-3 mt-8 sm:mt-10 pt-5 sm:pt-6 border-t border-white/15"
-              style={{ gap: "clamp(12px, 2vw, 24px)" }}
-            >
-              {[
-                { num: "48", suffix: "h", label: "Duration" },
-                { num: "12", suffix: "+", label: "Acts" },
-                { num: "50", suffix: "k", label: "Crowd" },
-              ].map((stat) => (
-                <div key={stat.label} className="group">
-                  <div
-                    className="font-display leading-none tabular-nums group-hover:text-accent transition-colors duration-500"
-                    style={{ fontSize: "clamp(24px, 4vw, 48px)" }}
-                  >
-                    <span
-                      className="story-stat-num"
-                      data-value={stat.num}
-                      data-suffix={stat.suffix}
-                    >
-                      0{stat.suffix}
-                    </span>
-                  </div>
-                  <div
-                    className="label mt-1.5 sm:mt-2 text-white/40 group-hover:text-white/70 transition-colors duration-500"
-                    style={{ fontSize: "clamp(9px, 1.1vw, 11px)" }}
-                  >
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
-            </div>
 
-            {/* CTA */}
-            <div className="story-cascade mt-8 sm:mt-10">
-              <a
-                href="#experience"
-                data-hover
-                className="inline-flex items-center gap-2 label border-b border-white/30 pb-1 hover:border-accent hover:text-accent transition-colors group"
-                style={{ fontSize: "clamp(10px, 1.3vw, 12px)" }}
-              >
-                <span>Explore the experience</span>
-                <span className="group-hover:translate-x-1 transition-transform">→</span>
-              </a>
-            </div>
           </div>
         </div>
 
         {/* BOTTOM META STRIP */}
         <div className="mt-16 sm:mt-20 pt-6 sm:pt-8 border-t border-white/10 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
           {[
-            ["Origin", "Underground Drift"],
-            ["Genre", "Motorsport × Music"],
-            ["Vibe", "Raw · Loud · Live"],
-            ["Year", "Est. 2026"],
+            ["Dates", "28–29 November 2026"],
+            ["Location", "Bengaluru, India"],
+            ["Format", "Motorsport × Live Music"],
+            ["Type", "Experiential Festival"],
           ].map(([label, val]) => (
             <div key={label}>
               <div className="label text-white/30 mb-1" style={{ fontSize: "clamp(9px, 1.1vw, 10px)" }}>
