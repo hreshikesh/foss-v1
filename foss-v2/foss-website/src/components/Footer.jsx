@@ -16,10 +16,10 @@ export default function Footer() {
           <div className="col-span-6 md:col-span-2">
             <div className="label mb-3">Menu</div>
             <ul className="space-y-1.5 text-xs text-white/50">
-              <li><a href="#story" className="hover:text-white transition">Story</a></li>
-              <li><a href="#experience" className="hover:text-white transition">Experience</a></li>
-              <li><a href="#program" className="hover:text-white transition">Program</a></li>
+              <li><a href="#story" className="hover:text-white transition">About</a></li>
               <li><a href="#tickets" className="hover:text-white transition">Tickets</a></li>
+              <li><a href="#venue" className="hover:text-white transition">Venue</a></li>
+
             </ul>
           </div>
 
@@ -27,7 +27,7 @@ export default function Footer() {
             <div className="label mb-3">Contact</div>
             <ul className="space-y-1.5 text-xs text-white/50">
               <li><a href="tel:+917019033669" className="hover:text-white transition">+91 70190 33669</a></li>
-              <li>hello@foss.in</li>
+       
               <li>Bengaluru, IN</li>
             </ul>
           </div>
@@ -36,7 +36,7 @@ export default function Footer() {
             <div className="label mb-3">Follow</div>
             <ul className="space-y-1.5 text-xs text-white/50">
               <li><a href="https://instagram.com/foss.in" className="hover:text-white transition">Instagram ↗</a></li>
-              <li><a href="#" className="hover:text-white transition">YouTube ↗</a></li>
+              {/* <li><a href="#" className="hover:text-white transition">YouTube ↗</a></li> */}
             </ul>
           </div>
         </div>

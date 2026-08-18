@@ -2,11 +2,8 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import gsap from "gsap";
 
 const navItems = [
-  { label: "Story", href: "#story" },
-  { label: "Experience", href: "#experience" },
-  { label: "Program", href: "#program" },
+  { label: "About", href: "#story" },,
    { label: "Tickets", href: "#tickets" },
-  { label: "Reels", href: "#reels" },
   
   { label: "Venue", href: "#venue" },
 ];
