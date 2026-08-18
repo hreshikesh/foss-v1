@@ -1,0 +1,186 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-sans: 'Inter', sans-serif;
+    --font-display: 'Anton', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Restrict cursor hiding strictly to devices with fine pointing hardware (desktop) */
+  @media (pointer: fine) and (hover: hover) {
+    *, body, a, button {
+      cursor: none;
+    }
+  }
+
+  html {
+    background-color: #000000;
+    color: #f5f5f5;
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+
+  body {
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Lenis smooth scroll rules */
+  html.lenis, 
+  html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  /* Hide scrollbars across WebKit browsers */
+  ::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* Touch & form controls optimization */
+  button, 
+  a, 
+  input, 
+  select, 
+  textarea {
+    touch-action: manipulation;
+  }
+
+  /* Accessible keyboard focus states */
+  :focus-visible {
+    outline: 2px solid #e10600;
+    outline-offset: 4px;
+  }
+}
+
+@layer components {
+  /* Fluid responsive mono label */
+  .label {
+    font-family: var(--font-mono);
+    font-size: clamp(9px, 0.8vw, 11px);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  /* Animated hover underline */
+  .underline-hover {
+    position: relative;
+    display: inline-block;
+  }
+
+  .underline-hover::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: currentColor;
+    transition: width 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+
+  .underline-hover:hover::after {
+    width: 100%;
+  }
+
+  /* Hardware-accelerated text shimmer mask */
+  .text-mask {
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    background-image: linear-gradient(120deg, #ffffff 40%, #e10600 60%, #ffffff 80%);
+    background-size: 200% 100%;
+    animation: shine 4s linear infinite;
+    will-change: background-position;
+  }
+
+  /* Viewport-scaled preview shadow glow */
+  .preview-glow {
+    box-shadow: 
+      0 0 25px rgba(225, 6, 0, 0.25),
+      0 10px 30px rgba(0, 0, 0, 0.6);
+  }
+
+  @media (min-width: 768px) {
+    .preview-glow {
+      box-shadow: 
+        0 0 50px rgba(225, 6, 0, 0.35),
+        0 20px 60px rgba(0, 0, 0, 0.7);
+    }
+  }
+}
+
+@layer utilities {
+  /* Cinematic color grading */
+  .img-cin {
+    filter: contrast(1.08) saturate(1.1);
+  }
+
+  /* GPU-rendered noise grain overlay */
+  .grain {
+    position: relative;
+  }
+
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    opacity: 0.05;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    transform: translateZ(0);
+  }
+
+  /* Clip-path reveal animation target */
+  .clip-mask {
+    clip-path: inset(100% 0 0 0);
+    will-change: clip-path;
+  }
+
+  /* Performance layer hint */
+  .will-change-transform {
+    will-change: transform, clip-path, opacity;
+  }
+
+  /* 3D Transform Utilities */
+  .perspective-1200 {
+    perspective: 1200px;
+  }
+
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+}
+
+@keyframes shine {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
