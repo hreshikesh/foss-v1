@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import gsap from "gsap";
+import fossLogo from "../assets/svg/logo-large-white.svg"; 
 
 const navItems = [
-  { label: "About", href: "#story" },,
-   { label: "Tickets", href: "#tickets" },
-  
-  { label: "Venue", href: "#venue" },
+  { label: "About",   href: "#story" }, 
+  { label: "Tickets", href: "#tickets" },
+  { label: "Venue",   href: "#venue" },
 ];
 
 export default function Nav() {
@@ -13,7 +13,7 @@ export default function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [hidden, setHidden] = useState(false); // ✅ hide-on-scroll-down
+  const [hidden, setHidden] = useState(false);
 
   const mobileMenuRef = useRef(null);
   const lastScrollY = useRef(0);
@@ -26,10 +26,8 @@ export default function Nav() {
       if (rafId) cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(() => {
         const y = window.scrollY;
-
         setScrolled(y > 60);
 
-        // ✅ Hide on scroll down, show on scroll up (only after threshold)
         if (y > 200) {
           setHidden(y > lastScrollY.current);
         } else {
@@ -37,12 +35,10 @@ export default function Nav() {
         }
         lastScrollY.current = y;
 
-        // Progress
         const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
         const progress = totalHeight > 0 ? (y / totalHeight) * 100 : 0;
         setScrollProgress(Math.min(100, Math.max(0, progress)));
 
-        // Active section — check midpoint of viewport
         const viewportMid = window.innerHeight / 2;
         let current = "";
         for (const item of navItems) {
@@ -54,7 +50,7 @@ export default function Nav() {
               current = item.href;
               break;
             }
-          } catch { /* ignore bad selector */ }
+          } catch { /* ignore */ }
         }
         setActiveSection(current);
       });
@@ -81,7 +77,7 @@ export default function Nav() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // ── MOBILE MENU GSAP ANIMATIONS ───────────────────────────
+  // ── MOBILE MENU GSAP ──────────────────────────────────────
   useEffect(() => {
     if (!mobileMenuRef.current) return;
 
@@ -115,23 +111,7 @@ export default function Nav() {
     return () => ctx.revert();
   }, [menuOpen]);
 
-  // ── SMOOTH SCROLL TO SECTION (FIXED) ──────────────────────
-  /*
-    Why the old version failed:
-    1. `setTimeout(150)` fired before Lenis / smooth-scroll had a chance —
-       the target el sometimes hadn't rendered yet.
-    2. `scrollIntoView` doesn't respect the fixed nav's height, so the
-       section title got covered by the nav.
-    3. On some pages the id was `story` but you queried `#story` inside
-       a shadow-root or dynamically mounted node.
-
-    Fix:
-    - Wait for menu-close animation frame, then double-rAF to guarantee
-      layout is committed.
-    - Compute manual scroll offset using `getBoundingClientRect().top +
-      window.scrollY - navHeight` so the section title lands *below* nav.
-    - Support both Lenis (if present) and native `window.scrollTo`.
-  */
+  // ── SMOOTH SCROLL TO SECTION ──────────────────────────────
   const handleNavClick = useCallback((href) => {
     const doScroll = () => {
       const el = document.querySelector(href);
@@ -139,32 +119,34 @@ export default function Nav() {
         console.warn(`[Nav] No element found for ${href}`);
         return;
       }
-
-      const navHeight = 80; // approx nav height + small breathing room
+      const navHeight = 80;
       const targetY = el.getBoundingClientRect().top + window.scrollY - navHeight;
 
-      // ✅ If Lenis is on window, use it — otherwise fall back to native
       if (window.lenis?.scrollTo) {
         window.lenis.scrollTo(targetY, { duration: 1.2, easing: (t) => 1 - Math.pow(1 - t, 3) });
       } else {
         window.scrollTo({ top: targetY, behavior: "smooth" });
       }
-
-      // Update URL hash without triggering jump
       history.replaceState(null, "", href);
       setActiveSection(href);
     };
 
     if (menuOpen) {
       setMenuOpen(false);
-      // Wait for close animation, then two rAFs to guarantee layout is settled
       setTimeout(() => {
         requestAnimationFrame(() => requestAnimationFrame(doScroll));
-      }, 550); // matches clipPath close duration
+      }, 550);
     } else {
       doScroll();
     }
   }, [menuOpen]);
+
+  const goToTop = (e) => {
+    e.preventDefault();
+    if (window.lenis?.scrollTo) window.lenis.scrollTo(0);
+    else window.scrollTo({ top: 0, behavior: "smooth" });
+    setActiveSection("");
+  };
 
   return (
     <>
@@ -178,7 +160,7 @@ export default function Nav() {
           }`}
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
-        {/* Scroll Progress bar */}
+        {/* Scroll progress bar */}
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-white/5 overflow-hidden">
           <div
             className="h-full bg-accent origin-left will-change-transform"
@@ -190,27 +172,22 @@ export default function Nav() {
         </div>
 
         <div className="px-4 sm:px-6 md:px-10 py-3.5 md:py-4 flex justify-between items-center gap-4">
-          {/* ── LOGO ── */}
+
+          {/* ── LOGO (SVG) ── */}
           <a
             href="#top"
-            className="flex items-center gap-2 flex-shrink-0 group"
+            onClick={goToTop}
+            className="flex items-center flex-shrink-0 group transition-opacity duration-300 hover:opacity-80"
             data-hover
-            onClick={(e) => {
-              e.preventDefault();
-              if (window.lenis?.scrollTo) window.lenis.scrollTo(0);
-              else window.scrollTo({ top: 0, behavior: "smooth" });
-              setActiveSection("");
-            }}
+            aria-label="FOSS — Festival of Sound & Speed — go to top"
           >
-            <div className="relative w-8 h-8 border border-white/60 group-hover:border-accent
-              flex items-center justify-center text-xs font-bold transition-colors overflow-hidden">
-              <span className="transition-transform duration-500 group-hover:-translate-y-full">F</span>
-              <span className="absolute transition-transform duration-500 translate-y-full
-                group-hover:translate-y-0 text-accent">F</span>
-            </div>
-            <span className="text-xs sm:text-sm font-semibold tracking-[0.25em] sm:tracking-[0.3em] uppercase">
-              FOSS
-            </span>
+            <img
+              src={fossLogo}
+              alt="FOSS"
+              className="h-5 sm:h-9 md:h-10 w-auto select-none"
+              draggable={false}
+              
+            />
           </a>
 
           {/* ── DESKTOP MENU ── */}
@@ -227,7 +204,6 @@ export default function Nav() {
                       ${isActive ? "text-white" : "text-white/50 hover:text-white"}`}
                   >
                     {item.label}
-                    {/* Active underline */}
                     <span
                       className={`absolute -bottom-1 left-0 right-0 h-[2px] bg-accent
                         transition-transform duration-300 origin-left
@@ -253,7 +229,7 @@ export default function Nav() {
               <span className="group-hover:translate-x-0.5 transition-transform">→</span>
             </a>
 
-            {/* ── HAMBURGER ── */}
+            {/* Hamburger */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               data-hover
@@ -286,11 +262,9 @@ export default function Nav() {
           paddingBottom: "env(safe-area-inset-bottom)",
         }}
       >
-        {/* Ambient glow */}
         <div className="absolute inset-0 pointer-events-none opacity-40"
           style={{ background: "radial-gradient(circle at 80% 20%, rgba(225,6,0,0.15) 0%, transparent 50%)" }}
         />
-        {/* Grid */}
         <div className="absolute inset-0 pointer-events-none opacity-[0.03]"
           style={{
             backgroundImage:
@@ -300,7 +274,18 @@ export default function Nav() {
         />
 
         <div className="relative min-h-full flex flex-col justify-between px-6 pt-24 pb-8">
-          {/* MENU ITEMS */}
+
+          {/* ✅ Big FOSS logo at top of mobile menu */}
+          <div className="mobile-menu-footer flex justify-center mb-6">
+            <img
+              src={fossLogo}
+              alt="FOSS"
+              className="h-14 w-auto opacity-90"
+              draggable={false}
+              // style={{ filter: "brightness(0) invert(1)" }}   // ← uncomment if black
+            />
+          </div>
+
           <div className="flex-1 flex flex-col justify-center py-8">
             <div className="label text-accent mb-6 flex items-center gap-3">
               <span className="w-6 h-px bg-accent" />

@@ -1,145 +1,165 @@
-import { useEffect, useRef, useId } from "react";
+import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+import logoSvgRaw from "../assets/svg/logo-large-white.svg?raw";
+
 gsap.registerPlugin(ScrollTrigger);
-
-// Custom Motorsport Vector Letter Renderer
-function FossLetter({ letter }) {
-  const rawId = useId();
-  // Sanitize ID for SVG mask reference
-  const maskId = `slash-mask-${rawId.replace(/:/g, "")}`;
-
-  return (
-    <svg
-      viewBox="0 0 125 100"
-      className="w-full h-auto overflow-visible drop-shadow-[0_10px_20px_rgba(225,6,0,0.25)]"
-      fill="currentColor"
-    >
-      <defs>
-        <mask id={maskId}>
-          <rect x="-30" y="-30" width="185" height="160" fill="white" />
-          {/* Top-Right Speed Cut / Slash */}
-          <polygon points="100,-10 106,-10 122,30 116,30" fill="black" />
-          {/* Bottom-Left Speed Cut / Slash */}
-          <polygon points="-6,68 0,68 16,108 10,108" fill="black" />
-        </mask>
-      </defs>
-
-      <g transform="skewX(-18) translate(18, 0)" mask={`url(#${maskId})`}>
-        {letter === "F" && (
-          <path d="M 24,0 L 108,0 C 116,0 120,4 120,12 L 120,16 C 120,24 116,26 108,26 L 38,26 L 38,42 L 86,42 C 94,42 98,46 98,52 L 98,56 C 98,62 94,64 86,64 L 38,64 L 38,88 C 38,96 34,100 24,100 L 14,100 C 4,100 0,96 0,88 L 0,12 C 0,4 4,0 14,0 Z" />
-        )}
-
-        {letter === "O" && (
-          <path
-            fillRule="evenodd"
-            d="M 28,0 L 92,0 C 112,0 120,8 120,28 L 120,72 C 120,92 112,100 92,100 L 28,100 C 8,100 0,92 0,72 L 0,28 C 0,8 8,0 28,0 Z M 36,26 L 84,26 C 90,26 94,28 94,34 L 94,66 C 94,72 90,74 84,74 L 36,74 C 30,74 26,72 26,66 L 26,34 C 26,28 30,26 36,26 Z"
-          />
-        )}
-
-        {letter === "S" && (
-          <path d="M 24,0 L 96,0 C 112,0 120,6 120,18 L 120,24 C 120,34 112,38 96,38 L 52,38 C 44,38 40,40 40,44 L 40,46 C 40,50 44,52 52,52 L 96,52 C 112,52 120,60 120,76 L 120,82 C 120,94 112,100 96,100 L 24,100 C 8,100 0,94 0,82 L 0,76 C 0,66 8,62 24,62 L 68,62 C 76,62 80,60 80,56 L 80,54 C 80,50 76,48 68,48 L 24,48 C 8,48 0,40 0,24 L 0,18 C 0,6 8,0 24,0 Z" />
-        )}
-      </g>
-    </svg>
-  );
-}
 
 export default function Preloader({ onComplete }) {
   const containerRef = useRef(null);
   const counterRef = useRef(null);
   const barRef = useRef(null);
+  const svgWrapperRef = useRef(null);
 
   useEffect(() => {
-    // Lock body scroll during preloader
     document.body.style.overflow = "hidden";
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         onComplete: () => {
-          // Slide preloader up
+          // Slide up preloader overlay to reveal main content
           gsap.to(containerRef.current, {
             yPercent: -100,
-            duration: 0.9,
+            duration: 0.8,
             ease: "power4.inOut",
             onComplete: () => {
               document.body.style.overflow = "";
               onComplete?.();
-              // Refresh scroll triggers
               setTimeout(() => ScrollTrigger.refresh(), 100);
             },
           });
         },
       });
 
-      // 1. Letters slide in
-      tl.fromTo(
-        ".preloader-letter",
-        { yPercent: 120, opacity: 0 },
-        {
-          yPercent: 0,
-          opacity: 1,
-          duration: 0.7,
-          stagger: 0.08,
-          ease: "power3.out",
-        }
+      // 1. Extract and horizontally sort all vector shapes (Left to Right sequence)
+      const svgNodes = Array.from(
+        svgWrapperRef.current.querySelectorAll("path, polygon, rect, circle")
       );
 
-      // 2. Subtitle fade in
+      // Sort elements strictly by their X-coordinate box position
+      svgNodes.sort((a, b) => {
+        const boxA = a.getBBox ? a.getBBox().x : 0;
+        const boxB = b.getBBox ? b.getBBox().x : 0;
+        return boxA - boxB;
+      });
+
+      // Prepare stroke properties for laser tracing
+      svgNodes.forEach((node) => {
+        const length = node.getTotalLength ? node.getTotalLength() : 300;
+        gsap.set(node, {
+          strokeDasharray: length,
+          strokeDashoffset: length,
+          stroke: "#e10600",
+          strokeWidth: 2,
+          fillOpacity: 0,
+          transformOrigin: "50% 50%",
+        });
+      });
+
+      // Initial Container Entry
       tl.fromTo(
+        svgWrapperRef.current,
+        { opacity: 0, scale: 0.9 },
+        { opacity: 1, scale: 1, duration: 0.3 }
+      );
+
+      // 2. Letter-by-Letter High Speed Trace & Fill Sequence
+      tl.to(svgNodes, {
+        strokeDashoffset: 0,
+        duration: 0.6,
+        stagger: 0.08,
+        ease: "power2.out",
+      })
+        .to(
+          svgNodes,
+          {
+            fillOpacity: 1,
+            strokeWidth: 0,
+            duration: 0.4,
+            stagger: 0.08,
+            ease: "power1.inOut",
+          },
+          "-=0.5"
+        )
+        // Spring letter impact with velocity skew
+        .fromTo(
+          svgNodes,
+          { y: -15, skewX: -20, filter: "brightness(2)" },
+          {
+            y: 0,
+            skewX: 0,
+            filter: "brightness(1)",
+            duration: 0.5,
+            stagger: 0.06,
+            ease: "back.out(1.7)",
+          },
+          "-=0.6"
+        );
+
+      // 3. Subtitle & Red Velocity Laser Line
+      tl.fromTo(
+        ".preloader-laser-line",
+        { scaleX: 0, opacity: 0 },
+        { scaleX: 1, opacity: 1, duration: 0.6, ease: "power3.out" },
+        "-=0.2"
+      ).fromTo(
         ".preloader-sub",
-        { opacity: 0, y: 10 },
-        { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },
-        "-=0.3"
+        { opacity: 0, y: 15, letterSpacing: "0.2em" },
+        { opacity: 1, y: 0, letterSpacing: "0.4em", duration: 0.6, ease: "power2.out" },
+        "-=0.4"
       );
 
-      // 3. Counter animation
+      // 4. Counter & Red Glow Ramp
       const counterObj = { val: 0 };
       tl.to(
         counterObj,
         {
           val: 100,
-          duration: 2,
+          duration: 1.8,
           ease: "power2.inOut",
           onUpdate: () => {
-            if (counterRef.current) {
-              counterRef.current.textContent = Math.round(counterObj.val);
-            }
+            if (counterRef.current) counterRef.current.textContent = Math.round(counterObj.val);
           },
         },
-        "-=0.2"
-      );
+        "-=0.3"
+      )
+        .to(barRef.current, { scaleX: 1, duration: 1.8, ease: "power2.inOut" }, "<")
+        .to(
+          svgWrapperRef.current,
+          {
+            filter: "drop-shadow(0 0 30px rgba(225,6,0,0.9))",
+            duration: 0.9,
+            yoyo: true,
+            repeat: 1,
+            ease: "sine.inOut",
+          },
+          "<"
+        );
 
-      // 4. Progress bar (in sync with counter)
-      tl.to(
-        barRef.current,
-        { scaleX: 1, duration: 2, ease: "power2.inOut" },
-        "<"
-      );
+      // 5. Brief Hold
+      tl.to({}, { duration: 0.2 });
 
-      // 5. Hold briefly
-      tl.to({}, { duration: 0.4 });
-
-      // 6. Letters slide out
-      tl.to(".preloader-letter", {
-        yPercent: -120,
+      // 6. High-Speed Nitro Launch Exit
+      tl.to(svgWrapperRef.current, {
+        scaleX: 1.8,
+        scaleY: 0.6,
+        y: -120,
         opacity: 0,
-        duration: 0.5,
-        stagger: 0.05,
-        ease: "power3.in",
+        filter: "blur(12px)",
+        duration: 0.45,
+        ease: "power4.in",
       });
 
-      // 7. Subtitle + progress fade
       tl.to(
-        [".preloader-sub", ".preloader-progress"],
+        [".preloader-sub", ".preloader-laser-line", ".preloader-progress"],
         {
           opacity: 0,
           y: -20,
-          duration: 0.4,
+          duration: 0.3,
           ease: "power2.in",
         },
-        "-=0.3"
+        "-=0.35"
       );
     }, containerRef);
 
@@ -152,39 +172,28 @@ export default function Preloader({ onComplete }) {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-[10000] bg-black flex flex-col items-center justify-center overflow-hidden"
+      className="fixed inset-0 z-[10000] bg-black flex flex-col items-center justify-center overflow-hidden select-none"
     >
-      {/* Top labels */}
-      <div className="absolute top-6 md:top-8 left-6 md:left-8 label text-white/30">
+      {/* Top Motorsport Badges */}
+      <div className="absolute top-6 md:top-8 left-6 md:left-8 text-[11px] font-mono tracking-[0.25em] text-white/30 uppercase">
         FOSS · 2026
       </div>
-      <div className="absolute top-6 md:top-8 right-6 md:right-8 label text-white/30">
+      <div className="absolute top-6 md:top-8 right-6 md:right-8 text-[11px] font-mono tracking-[0.25em] text-white/30 uppercase">
         Bengaluru, IN
       </div>
 
-      {/* Main vector logo with overflow wrapper */}
-      <div className="flex overflow-hidden py-4 px-2">
-        <div className="flex items-center justify-center gap-1.5 sm:gap-3 md:gap-4">
-          {["F", "O", "S", "S"].map((letter, i) => (
-            <span
-              key={i}
-              className="preloader-letter inline-block w-[18vw] max-w-[120px] sm:max-w-[150px] md:w-[13vw] md:max-w-[190px]"
-              style={{
-                color: "#e10600", // Racing Red matching image
-              }}
-            >
-              <FossLetter letter={letter} />
-            </span>
-          ))}
-        </div>
-      </div>
+      {/* SVG Container */}
+      <div
+        ref={svgWrapperRef}
+        className="relative w-[85vw] max-w-[500px] sm:max-w-[620px] md:max-w-[780px] px-4 py-2 text-white fill-current drop-shadow-[0_10px_30px_rgba(225,6,0,0.3)]"
+        dangerouslySetInnerHTML={{ __html: logoSvgRaw }}
+      />
 
-      {/* Subtitle */}
-      <div className="preloader-sub mt-4 md:mt-6 label text-white/40 tracking-[0.4em] text-center px-4">
-        FESTIVAL OF SOUND & SPEED
-      </div>
+      {/* Red Laser Accent Line */}
+      <div className="preloader-laser-line w-[60vw] max-w-[400px] h-[1px] bg-gradient-to-r from-transparent via-[#e10600] to-transparent my-3 origin-center" />
 
-      {/* Progress bar */}
+  
+      {/* Progress Bar & Counter */}
       <div className="preloader-progress absolute bottom-8 md:bottom-10 left-6 md:left-8 right-6 md:right-8 flex items-center gap-4">
         <div className="flex-1 h-px bg-white/10 relative overflow-hidden">
           <div
@@ -193,7 +202,7 @@ export default function Preloader({ onComplete }) {
             style={{ transform: "scaleX(0)" }}
           />
         </div>
-        <div className="font-mono text-sm text-white/60 tabular-nums w-10 text-right flex items-baseline gap-0.5">
+        <div className="font-mono text-sm text-white/70 tabular-nums w-12 text-right flex items-baseline justify-end gap-0.5 font-bold">
           <span ref={counterRef}>0</span>
           <span className="text-[10px] text-white/30">%</span>
         </div>

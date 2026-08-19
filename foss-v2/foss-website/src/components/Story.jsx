@@ -132,9 +132,7 @@ export default function Story() {
             <div className="flex items-center gap-2 group cursor-default">
               <span className="text-white/50 group-hover:text-accent transition-colors">📍</span>
               <span className="text-white/80 font-medium tracking-wide">BENGALURU</span>
-              <span className="hidden sm:inline text-[10px] text-white/40 font-mono">
-                [12.9716° N, 77.5946° E]
-              </span>
+              
             </div>
           </div>
         </div>
@@ -230,7 +228,6 @@ export default function Story() {
             ["Dates", "28–29 November 2026"],
             ["Location", "Bengaluru, India"],
             ["Format", "Motorsport × Live Music"],
-            ["Type", "Experiential Festival"],
           ].map(([label, val]) => (
             <div key={label}>
               <div className="label text-white/30 mb-1" style={{ fontSize: "clamp(9px, 1.1vw, 10px)" }}>
