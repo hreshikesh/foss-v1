@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
+import aboutImage from "../assets/about.png";
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Story() {
@@ -158,7 +158,7 @@ export default function Story() {
 
               <img
                 ref={imageRef}
-                src="/placeholder.png"
+                src={aboutImage}
                 alt="Festival of Sound and Speed"
                 onLoad={() => setImgLoaded(true)}
                 className={`w-full h-full object-cover img-cin will-change-transform transition-opacity duration-700 ${imgLoaded ? "opacity-100" : "opacity-0"

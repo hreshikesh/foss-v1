@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
+import venueImage from "../assets/venue.jpg";
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Venue() {
@@ -53,9 +53,9 @@ export default function Venue() {
         <div className="col-span-12 md:col-span-7 relative overflow-hidden min-h-[250px]">
           <div ref={imgRef} className="absolute inset-[-10%]">
             <img
-              src="/placeholder.png"
+              src={venueImage}
               alt="Festival Venue"
-              className="w-full h-full object-cover img-cin opacity-80"
+              className="w-full h-full object-contain img-cin opacity-80"
             />
           </div>
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/30 to-black" />

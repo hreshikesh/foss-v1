@@ -7,9 +7,36 @@ gsap.registerPlugin(ScrollTrigger);
 export default function Hero() {
   const sectionRef = useRef(null);
   const videoWrapRef = useRef(null);
-  const videoRef = useRef(null);
+  const video1Ref = useRef(null);
+  const video2Ref = useRef(null);
   const textRef = useRef(null);
-  const [videoLoaded, setVideoLoaded] = useState(false);
+
+  const [activeVideo, setActiveVideo] = useState(0);
+  const [initialLoaded, setInitialLoaded] = useState(false);
+
+  // Smooth cross-fade handlers
+  const handleVideo0Ended = () => {
+    if (video2Ref.current) {
+      video2Ref.current.currentTime = 0;
+      video2Ref.current.play().catch(() => {});
+      setActiveVideo(1);
+    }
+  };
+
+  const handleVideo1Ended = () => {
+    if (video1Ref.current) {
+      video1Ref.current.currentTime = 0;
+      video1Ref.current.play().catch(() => {});
+      setActiveVideo(0);
+    }
+  };
+
+  useEffect(() => {
+    // Start initial video playback
+    if (video1Ref.current) {
+      video1Ref.current.play().catch(() => {});
+    }
+  }, []);
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia(
@@ -104,33 +131,51 @@ export default function Hero() {
         paddingTop: "env(safe-area-inset-top)",
       }}
     >
-      {/* Background Video */}
+      {/* Inject Orbitron / Speed Racing Typography */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:ital,wght@1,900&display=swap');
+        
+        .racing-title-font {
+          font-family: 'Orbitron', system-ui, -apple-system, sans-serif;
+          font-style: italic;
+          font-weight: 900;
+          letter-spacing: 0.05em;
+        }
+      `}</style>
+
+      {/* Background Video Wrapper */}
       <div
         ref={videoWrapRef}
         className="absolute inset-0 will-change-transform"
       >
-        <img
-          src="/placeholder.png"
-          alt=""
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${videoLoaded ? "opacity-0" : "opacity-100"
-            }`}
-        />
-
+        {/* Video 1 */}
         <video
-          ref={videoRef}
+          ref={video1Ref}
           autoPlay
-          loop
           muted
           playsInline
           preload="auto"
-          poster="/placeholder.png"
-          onLoadedData={() => setVideoLoaded(true)}
-          onCanPlay={() => setVideoLoaded(true)}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${videoLoaded ? "opacity-100" : "opacity-0"
-            }`}
+          onEnded={handleVideo0Ended}
+          onCanPlay={() => setInitialLoaded(true)}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+            activeVideo === 0 && initialLoaded ? "opacity-100" : "opacity-0"
+          }`}
         >
           <source src="/hero.mp4" type="video/mp4" />
-          <source src="/placeholder.png" type="video/mp4" />
+        </video>
+
+        {/* Video 2 */}
+        <video
+          ref={video2Ref}
+          muted
+          playsInline
+          preload="auto"
+          onEnded={handleVideo1Ended}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+            activeVideo === 1 ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <source src="/hero1.mp4" type="video/mp4" />
         </video>
       </div>
 
@@ -179,23 +224,25 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Main Title Styled to Match Image */}
+        {/* Main Title - Matches Image Style Exactly */}
         <div className="max-w-7xl my-auto py-6">
           <h1
-            className="font-black uppercase leading-[0.88] tracking-tighter"
+            className="racing-title-font uppercase leading-none"
             style={{
-              fontSize: "clamp(36px, 6.5vw, 92px)",
+              fontSize: "clamp(26px, 4.8vw, 76px)",
             }}
           >
-            <span className="block overflow-hidden">
-              <span className="hero-line block text-white">
-                FESTIVAL OF
-              </span>
-            </span>
-            <span className="block overflow-hidden">
-              <span className="hero-line inline-flex items-center gap-[0.25em]">
-                <span className="text-white">LIGHT &</span>
-                <span className="text-red-600 italic font-black">SPEED</span>
+            <span className="block overflow-hidden py-2">
+              <span className="hero-line flex flex-wrap items-center gap-x-[0.35em] gap-y-2">
+                {/* White / Dark Metallic Outline Text */}
+                <span className="text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]">
+                  FESTIVAL OF
+                </span>
+                
+                {/* Motorsport Red Accent Text */}
+                <span className="text-[#e10600] drop-shadow-[0_0_20px_rgba(225,6,0,0.35)]">
+                  SOUND & SPEED
+                </span>
               </span>
             </span>
           </h1>
