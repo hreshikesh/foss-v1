@@ -2,7 +2,10 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import venueImage from "../assets/venue.jpg";
+
 gsap.registerPlugin(ScrollTrigger);
+
+const MAPS_URL = "https://www.google.com/maps?q=13.1741517,77.59613949999999";
 
 export default function Venue() {
   const sectionRef = useRef(null);
@@ -50,12 +53,12 @@ export default function Venue() {
     >
       <div className="grid grid-cols-12 min-h-[50vh] sm:min-h-[70vh]">
         {/* Image side - 7 columns */}
-        <div className="col-span-12 md:col-span-7 relative overflow-hidden min-h-[250px]">
+        <div className="col-span-12 md:col-span-7 relative overflow-hidden min-h-[300px] md:min-h-[500px]">
           <div ref={imgRef} className="absolute inset-[-10%]">
             <img
               src={venueImage}
-              alt="Festival Venue"
-              className="w-full h-full object-contain img-cin opacity-80"
+              alt="District Arena @ Terraform, Bengaluru"
+              className="w-full h-full object-cover img-cin opacity-80"
             />
           </div>
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/30 to-black" />
@@ -72,14 +75,13 @@ export default function Venue() {
           </div>
 
           <h2 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[0.95] uppercase font-light tracking-tight mb-6 sm:mb-8">
-            
-            <span className="text-white/30">Bengaluru</span>
+            <span className="text-white">Bengaluru</span>
           </h2>
 
           <div className="space-y-4 sm:space-y-6 mb-6 sm:mb-8">
             {/* 1. VENUE */}
-            <div className="flex gap-3 sm:gap-4 items-center">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 border border-white/15 flex items-center justify-center flex-shrink-0">
+            <div className="flex gap-3 sm:gap-4 items-start">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 border border-white/15 flex items-center justify-center flex-shrink-0 mt-0.5">
                 <svg
                   className="w-4 h-4 text-red-600"
                   viewBox="0 0 24 24"
@@ -95,9 +97,12 @@ export default function Venue() {
                 <div className="text-[10px] sm:text-xs text-white/40 uppercase tracking-wider font-normal">
                   Venue
                 </div>
-                <div className="text-white text-xs sm:text-sm md:text-base font-medium">
-                  To Be Announced
+                <div className="text-white text-xs sm:text-sm md:text-base font-semibold">
+                  District Arena @ Terraform
                 </div>
+                <p className="text-white/60 text-[11px] sm:text-xs mt-1 leading-relaxed font-normal max-w-sm">
+                  Survey No - 147/15, Taluk, near Embassy Riding School, Jala Hobali, Yelahanka, Tharahunise, Bengaluru, Karnataka 562157
+                </p>
               </div>
             </div>
 
@@ -145,7 +150,7 @@ export default function Venue() {
                   Phone / Helpline
                 </div>
                 <a
-                  href="tel:+9170190 33669"
+                  href="tel:+917019033669"
                   className="text-white hover:text-red-600 transition-colors text-xs sm:text-sm md:text-base font-medium"
                 >
                   +91 70190 33669
@@ -154,17 +159,17 @@ export default function Venue() {
             </div>
           </div>
 
-          {/* Directions Link
+          {/* Directions Link */}
           <div>
             <a
-              href="https://maps.google.com"
+              href={MAPS_URL}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="inline-block w-full sm:w-auto bg-red-600 hover:bg-white hover:text-black transition-all px-6 py-3 font-display text-xs uppercase tracking-wider text-white text-center font-normal"
             >
               Get Directions →
             </a>
-          </div> */}
+          </div>
         </div>
       </div>
     </section>
