@@ -69,12 +69,12 @@ const ProfessionalCard = ({ person }) => {
 
 export default function FossProfessionals() {
   return (
-    <div className="min-h-screen bg-[#070707] py-12 px-2 sm:px-6 md:px-12 font-sans">
+    <section id="athletes" className="min-h-screen bg-[#070707] py-12 px-2 sm:px-6 md:px-12 font-sans scroll-mt-24">
       
       {/* Header Section */}
       <div className="max-w-[1600px] mx-auto mb-8">
         <h2 className="text-3xl md:text-5xl font-black italic uppercase text-[#D9DAD8] tracking-wide border-b border-[#373737] pb-4 inline-block pr-12">
-          Professionals
+          ACTION ATHLETES
         </h2>
       </div>
 
@@ -84,12 +84,12 @@ export default function FossProfessionals() {
         - sm:grid-cols-4: 4 columns on tablets
         - lg:grid-cols-6: 6 columns on large desktop screens 
       */}
-      <div className="max-w-[1600px] mx-auto grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-4 lg:gap-6">
+      <div className="max-w-[1600px] mx-auto grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-3 gap-2 sm:gap-4 lg:gap-6">
         {fossProfessionals.map((person) => (
           <ProfessionalCard key={person.id} person={person} />
         ))}
       </div>
       
-    </div>
+    </section>
   );
 }

@@ -6,6 +6,7 @@ const navItems = [
   { label: "About",   href: "#story" }, 
   { label: "Tickets", href: "#tickets" },
   { label: "Venue",   href: "#venue" },
+  { label: "Athletes",   href: "#athletes" },
 ];
 
 export default function Nav() {

@@ -19,6 +19,8 @@ export default function Footer() {
               <li><a href="#story" className="hover:text-white transition">About</a></li>
               <li><a href="#tickets" className="hover:text-white transition">Tickets</a></li>
               <li><a href="#venue" className="hover:text-white transition">Venue</a></li>
+               <li><a href="#athletes" className="hover:text-white transition">Athletes</a></li>
+
 
             </ul>
           </div>
