@@ -15,6 +15,7 @@ import Footer from "./components/Footer";
 import Venue from "./components/Venue";
 import Preloader from "./components/Preloader";
 import { useState,useLayoutEffect } from "react";
+import FossProfessionals from "./components/FossProfessionals";
 
 export default function App() {
   const [loaded, setLoaded] = useState(false);
@@ -40,6 +41,7 @@ export default function App() {
       {/* <Experience />  */}
       {/* <Gallery />
       <Program /> */}
+      <FossProfessionals/>
       <Tickets />
       {/* <Reels />
       <Sponsors /> */}
