@@ -8,13 +8,14 @@ import Story from "./components/Story";
 // import Experience from "./components/Experience";
 // import Gallery from "./components/Gallery";
 // import Program from "./components/Program";
+import Video from "./components/Video";
 import Tickets from "./components/Tickets";
 import Footer from "./components/Footer";
 // import Reels from "./components/Reels";
 // import Sponsors from "./components/Sponsors";
 import Venue from "./components/Venue";
 import Preloader from "./components/Preloader";
-import { useState,useLayoutEffect } from "react";
+import { useState, useLayoutEffect } from "react";
 import FossProfessionals from "./components/FossProfessionals";
 
 export default function App() {
@@ -26,6 +27,7 @@ export default function App() {
     window.history.replaceState(null, "", window.location.pathname);
     window.scrollTo(0, 0);
   }, []);
+
   return (
     <main className="bg-black text-ink">
       {!loaded && <Preloader onComplete={() => setLoaded(true)} />}
@@ -41,7 +43,8 @@ export default function App() {
       {/* <Experience />  */}
       {/* <Gallery />
       <Program /> */}
-      <FossProfessionals/>
+      <FossProfessionals />
+      <Video />
       <Tickets />
       {/* <Reels />
       <Sponsors /> */}

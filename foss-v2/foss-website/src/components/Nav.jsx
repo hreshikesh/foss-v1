@@ -4,9 +4,10 @@ import fossLogo from "../assets/svg/logo-large-white.svg";
 
 const navItems = [
   { label: "About",   href: "#story" }, 
+  { label: "Athletes", href: "#athletes" },
+  { label: "Video",   href: "#video" },
   { label: "Tickets", href: "#tickets" },
   { label: "Venue",   href: "#venue" },
-  { label: "Athletes",   href: "#athletes" },
 ];
 
 export default function Nav() {
@@ -187,7 +188,6 @@ export default function Nav() {
               alt="FOSS"
               className="h-5 sm:h-9 md:h-10 w-auto select-none"
               draggable={false}
-              
             />
           </a>
 
@@ -276,14 +276,12 @@ export default function Nav() {
 
         <div className="relative min-h-full flex flex-col justify-between px-6 pt-24 pb-8">
 
-          {/* ✅ Big FOSS logo at top of mobile menu */}
           <div className="mobile-menu-footer flex justify-center mb-6">
             <img
               src={fossLogo}
               alt="FOSS"
               className="h-14 w-auto opacity-90"
               draggable={false}
-              // style={{ filter: "brightness(0) invert(1)" }}   // ← uncomment if black
             />
           </div>
 
